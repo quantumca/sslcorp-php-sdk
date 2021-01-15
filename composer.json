@@ -1,0 +1,31 @@
+{
+    "name": "sslcorp/sdk",
+    "description": "The PHP SDK for SslCorp API",
+    "authors": [
+        {
+            "name": "Dev Team from Quantum CA",
+            "email": "dev@quantumca.cn",
+            "homepage": "https://www.quantumca.cn"
+        }
+    ],
+    "type": "package",
+    "require": {
+        "php": ">=5.6",
+        "guzzlehttp/guzzle": ">=4.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "SslCorp\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SslCorp\\Laravel\\LaravelServiceProvider"
+            ],
+            "aliases": {
+                "SslCorp": "SslCorp\\Laravel\\SslCorpFacade"
+            }
+        }
+    }
+}
