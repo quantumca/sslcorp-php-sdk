@@ -29,10 +29,13 @@ class Order extends BaseApi
      * @param int $ca_certificate_id If specified, this overrides SSL.com’s default choice of CA certificate/key to be used to issue this certificate. This functionality is only available by special agreement with SSL.com.
      * @param string $external_order_number This identifier is provided for integration with partner systems. If the external system has a record or identifier that needs to associate with this particular ssl certificate order, then the developer provides an external order number or identifier so that the developer can make the association.
      * @param string $hide_certificate_reference y/n y hide the certificate reference number in the emailed ssl certificaten default; show the certificate reference number in the emailed ssl certificate
-     * @param array $callback Example: {callback":{"url":"https://www.domain.com/receive_certificate.asp","method":"post",auth":{"basic":{"username":"your_username","password":"your_password"}},"parameters":{"certificate_hook":"cert","custom_1":"any_value","custom_2":"any_value","etc":"etc"}}.
-     * @param array $contacts Example: "contacts":{"all":{"first_name":"Joe","last_name":"Bob","email":"jbob@domain.com","phone":"+123456789","country":"US"}}.
+     * @param array $callback This is the callback SSL.com will make once the certificate is issued and ready for collection. The url is "called" via the method (post or get).  Example: {callback":{"url":"https://www.domain.com/receive_certificate.asp","method":"post",auth":{"basic":{"username":"your_username","password":"your_password"}},"parameters":{"certificate_hook":"cert","custom_1":"any_value","custom_2":"any_value","etc":"etc"}}.
+     * @param array $contacts Required only if csr is specified, otherwise contacts will be ignored. Contacts with administrative, billing, technical, validation or all roles. Specify one for each (total of 4): [administrative, billing, technical, validation]. You can also specify one with role all which will used as the default contact in place of one or more of the previous contact roles if they are not specified.  Example: "contacts":{"all":{"first_name":"Joe","last_name":"Bob","email":"jbob@domain.com","phone":"+123456789","country":"US"}}.
+     * @param array $app_rep Applicant Representative used for callback. Only for OV certificates. All values are optional. Example: {"app_rep" : {"first_name" : "Joe", "last_name" : "Bob", "email_address" : "bob@mysite.com", "phone_number" : "111-111-1111", "title" : "owner", "country" : "US", "callback_method" : "t"}
+     * @param array $payment_method Optional payment method. If payment method is specified, then payment will override the default method of deducting funds from the prepaid deposit/funded account associated with the `account_key`. Example: {"credit_card":{"first_name":"Bob","last_name":"Smith","number":"370000000000002","expires":"0119","cvv":"007,"postal_code":"77098","country":"US"}}
+     *
      */
-    public function createCertificate($product, $period, $unique_value, $csr, $server_software, $domains, $organization, $organization_unit, $post_office_box, $street_address_1, $street_address_2, $street_address_3, $locality, $state_or_province, $postal_code, $country, $duns_number, $company_number, $joi, $ca_certificate_id, $external_order_number, $hide_certificate_reference, $callback, $contacts)
+    public function createCertificate($product, $period, $unique_value, $csr, $server_software, $domains, $organization, $organization_unit, $post_office_box, $street_address_1, $street_address_2, $street_address_3, $locality, $state_or_province, $postal_code, $country, $duns_number, $company_number, $joi, $ca_certificate_id, $external_order_number, $hide_certificate_reference, $callback, $contacts, $app_rep, $payment_method)
     {
         return $this->post('/certificates', [
             'product' => $product,
@@ -59,6 +62,8 @@ class Order extends BaseApi
             'hide_certificate_reference' => $hide_certificate_reference,
             'callback' => $callback,
             'contacts' => $contacts,
+            'app_rep' => $app_rep,
+            'payment_method' => $payment_method,
         ]);
     }
 
