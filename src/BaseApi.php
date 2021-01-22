@@ -4,6 +4,7 @@ namespace SslCorp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use SslCorp\Exception\ResponseErrorException;
 
 abstract class BaseApi
 {
@@ -22,6 +23,13 @@ abstract class BaseApi
                 'secret_key' => config('ssl.secret_key'),
             ]),
         ]);
+        if ($res->getStatusCode() != 200) {
+            $json = json_decode($res->getBody()->__toString());
+            if (json_last_error() != JSON_ERROR_NONE) {
+                throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, $res->getBody()->__toString());
+            }
+            throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, optional($json)->errors);
+        }
         return json_decode($res->getBody()->__toString());
     }
 
@@ -33,6 +41,13 @@ abstract class BaseApi
                 'secret_key' => config('ssl.secret_key'),
             ]),
         ]);
+        if ($res->getStatusCode() != 200) {
+            $json = json_decode($res->getBody()->__toString());
+            if (json_last_error() != JSON_ERROR_NONE) {
+                throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, $res->getBody()->__toString());
+            }
+            throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, optional($json)->errors);
+        }
         return json_decode($res->getBody()->__toString());
     }
 }
