@@ -16,21 +16,23 @@ abstract class BaseApi
 
     protected function get($uri, $data)
     {
-        $this->http()->get($uri, [
+        $res = $this->http()->get($uri, [
             RequestOptions::QUERY => array_merge($data, [
                 'account_key' => config('ssl.account_key'),
                 'secret_key' => config('ssl.secret_key'),
             ]),
         ]);
+        return json_decode($res->getBody()->__toString());
     }
 
     protected function post($uri, $data)
     {
-        $this->http()->post($uri, [
+        $res = $this->http()->post($uri, [
             RequestOptions::JSON => array_merge($data, [
                 'account_key' => config('ssl.account_key'),
                 'secret_key' => config('ssl.secret_key'),
             ]),
         ]);
+        return json_decode($res->getBody()->__toString());
     }
 }
