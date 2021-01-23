@@ -8,6 +8,19 @@ use SslCorp\Exception\ResponseErrorException;
 
 abstract class BaseApi
 {
+    private function extra($data, $key)
+    {
+        return [
+            $key => array_merge($data, [
+                'account_key' => config('ssl.account_key'),
+                'secret_key' => config('ssl.secret_key'),
+            ]),
+            RequestOptions::CONNECT_TIMEOUT => 600,
+            RequestOptions::READ_TIMEOUT => 600,
+            RequestOptions::TIMEOUT => 600,
+        ];
+    }
+
     private function http()
     {
         return new Client([
@@ -17,12 +30,10 @@ abstract class BaseApi
 
     protected function get($uri, $data)
     {
-        $res = $this->http()->get($uri, [
-            RequestOptions::QUERY => array_merge($data, [
-                'account_key' => config('ssl.account_key'),
-                'secret_key' => config('ssl.secret_key'),
-            ]),
-        ]);
+        logger()->debug('SSL_API_METHOD', ['GET']);
+        logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
+        logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::QUERY));
+        $res = $this->http()->get($uri, $this->extra($data, RequestOptions::QUERY));
         if ($res->getStatusCode() != 200) {
             $json = json_decode($res->getBody()->__toString());
             if (json_last_error() != JSON_ERROR_NONE) {
@@ -35,17 +46,10 @@ abstract class BaseApi
 
     protected function post($uri, $data)
     {
-        logger('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
-        logger('SSL_API_DATA', array_merge($data, [
-            'account_key' => config('ssl.account_key'),
-            'secret_key' => config('ssl.secret_key'),
-        ]));
-        $res = $this->http()->post($uri, [
-            RequestOptions::JSON => array_merge($data, [
-                'account_key' => config('ssl.account_key'),
-                'secret_key' => config('ssl.secret_key'),
-            ]),
-        ]);
+        logger()->debug('SSL_API_METHOD', ['POST']);
+        logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
+        logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
+        $res = $this->http()->post($uri, $this->extra($data, RequestOptions::JSON));
         if ($res->getStatusCode() != 200) {
             $json = json_decode($res->getBody()->__toString());
             if (json_last_error() != JSON_ERROR_NONE) {
