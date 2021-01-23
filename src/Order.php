@@ -34,6 +34,7 @@ class Order extends BaseApi
      * @param array $app_rep Applicant Representative used for callback. Only for OV certificates. All values are optional. Example: {"app_rep" : {"first_name" : "Joe", "last_name" : "Bob", "email_address" : "bob@mysite.com", "phone_number" : "111-111-1111", "title" : "owner", "country" : "US", "callback_method" : "t"}
      * @param array $payment_method Optional payment method. If payment method is specified, then payment will override the default method of deducting funds from the prepaid deposit/funded account associated with the `account_key`. Example: {"credit_card":{"first_name":"Bob","last_name":"Smith","number":"370000000000002","expires":"0119","cvv":"007,"postal_code":"77098","country":"US"}}
      *
+     * @return \SslCorp\Interfaces\CreateCertificateRes
      */
     public function createCertificate($product, $period, $unique_value, $csr, $server_software, $domains, $organization, $organization_unit, $post_office_box, $street_address_1, $street_address_2, $street_address_3, $locality, $state_or_province, $postal_code, $country, $duns_number, $company_number, $joi, $ca_certificate_id, $external_order_number, $hide_certificate_reference, $callback, $contacts, $app_rep, $payment_method)
     {

@@ -35,6 +35,11 @@ abstract class BaseApi
 
     protected function post($uri, $data)
     {
+        logger('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
+        logger('SSL_API_DATA', array_merge($data, [
+            'account_key' => config('ssl.account_key'),
+            'secret_key' => config('ssl.secret_key'),
+        ]));
         $res = $this->http()->post($uri, [
             RequestOptions::JSON => array_merge($data, [
                 'account_key' => config('ssl.account_key'),
