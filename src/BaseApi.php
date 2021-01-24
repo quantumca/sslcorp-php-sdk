@@ -4,6 +4,9 @@ namespace SslCorp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Arr;
+use Psr\Http\Message\ResponseInterface;
+use SslCorp\Exception\CsrUniqueValueDuplicatedException;
 use SslCorp\Exception\ResponseErrorException;
 
 abstract class BaseApi
@@ -28,19 +31,30 @@ abstract class BaseApi
         ]);
     }
 
+    protected function processErrror(ResponseInterface $response)
+    {
+        $json = json_decode($response->getBody()->__toString());
+        if ($response->getStatusCode() != 200 || (property_exists($json, 'errors') && $json->errors)) {
+            if (json_last_error() != JSON_ERROR_NONE) {
+                throw new ResponseErrorException($response->getReasonPhrase(), $response->getStatusCode(), null, $response->getBody()->__toString());
+            }
+            if (Arr::get((array) optional($json)->errors, 'csr.csr_unique_values')) {
+                throw new CsrUniqueValueDuplicatedException();
+            }
+            throw new ResponseErrorException($response->getReasonPhrase(), $response->getStatusCode(), null, optional($json)->errors);
+        }
+    }
+
     protected function get($uri, $data)
     {
         logger()->debug('SSL_API_METHOD', ['GET']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::QUERY));
         $res = $this->http()->get($uri, $this->extra($data, RequestOptions::QUERY));
-        if ($res->getStatusCode() != 200) {
-            $json = json_decode($res->getBody()->__toString());
-            if (json_last_error() != JSON_ERROR_NONE) {
-                throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, $res->getBody()->__toString());
-            }
-            throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, optional($json)->errors);
-        }
+        $json = json_decode($res->getBody()->__toString());
+        logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
+        logger()->debug('SSL_API_RES_DATA', (array) $json);
+        $this->processErrror($res);
         return json_decode($res->getBody()->__toString());
     }
 
@@ -50,13 +64,10 @@ abstract class BaseApi
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
         $res = $this->http()->post($uri, $this->extra($data, RequestOptions::JSON));
-        if ($res->getStatusCode() != 200) {
-            $json = json_decode($res->getBody()->__toString());
-            if (json_last_error() != JSON_ERROR_NONE) {
-                throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, $res->getBody()->__toString());
-            }
-            throw new ResponseErrorException($res->getReasonPhrase(), $res->getStatusCode(), null, optional($json)->errors);
-        }
-        return json_decode($res->getBody()->__toString());
+        $json = json_decode($res->getBody()->__toString());
+        logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
+        logger()->debug('SSL_API_RES_DATA', (array) $json);
+        $this->processErrror($res);
+        return $json;
     }
 }
