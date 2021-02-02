@@ -70,4 +70,17 @@ abstract class BaseApi
         $this->processErrror($res);
         return $json;
     }
+
+    protected function put($uri, $data)
+    {
+        logger()->debug('SSL_API_METHOD', ['PUT']);
+        logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
+        logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
+        $res = $this->http()->put($uri, $this->extra($data, RequestOptions::JSON));
+        $json = json_decode($res->getBody()->__toString());
+        logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
+        logger()->debug('SSL_API_RES_DATA', (array) $json);
+        $this->processErrror($res);
+        return $json;
+    }
 }
