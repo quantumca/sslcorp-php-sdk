@@ -68,6 +68,20 @@ class Order extends BaseApi
         ]);
     }
 
+
+    /**
+     * Change domains or DCV
+     *
+     * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
+     * @param array $domains  {"domains" : {"www.mysite.com" : {"dcv" : "admin@mysite.com"}}, "mail.domain.io" : {"dcv : "HTTP_CSR_HASH"}}}
+     */
+    public function changeDomainsOrDcv($ref, $domains)
+    {
+        return $this->put('/certificate/' . $ref, [
+            'domains' => $domains,
+        ]);
+    }
+
     /**
      * List all Certificates
      *
@@ -101,8 +115,7 @@ class Order extends BaseApi
      */
     public function downloadCertificate($ref, $response_type, $response_encoding)
     {
-        return $this->get('/certificate/ref/', [
-            'ref' => $ref,
+        return $this->get('/certificate/' . $ref, [
             'response_type' => $response_type,
             'response_encoding' => $response_encoding,
         ]);
