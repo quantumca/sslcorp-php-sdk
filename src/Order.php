@@ -68,7 +68,6 @@ class Order extends BaseApi
         ]);
     }
 
-
     /**
      * Change domains or DCV
      *
@@ -80,6 +79,16 @@ class Order extends BaseApi
         return $this->put('/certificate/' . $ref, [
             'domains' => $domains,
         ]);
+    }
+
+    /**
+     * Retry DCV
+     *
+     * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
+     */
+    public function retryDcv($ref)
+    {
+        return $this->post('/certificate/' . $ref . '/retry_domain_validation', []);
     }
 
     /**
