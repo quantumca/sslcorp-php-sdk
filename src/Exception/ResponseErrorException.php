@@ -12,7 +12,7 @@ class ResponseErrorException extends Exception
     public function __construct($message = "", $code = 0, ?Throwable $previous = null, $data)
     {
         $this->data = $data;
-        parent::__construct($message, $code, $previous, $data);
+        parent::__construct($message, $code, $previous);
     }
 
     public function getData()
