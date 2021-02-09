@@ -69,6 +69,25 @@ class Order extends BaseApi
     }
 
     /**
+     * Update certificate
+     *
+     * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
+     * @param array $domains  {"domains" : {"www.mysite.com" : {"dcv" : "admin@mysite.com"}}, "mail.domain.io" : {"dcv : "HTTP_CSR_HASH"}}}
+     * @param string $csr
+     * @param string|null $unique_value An alphanumeric string that ensures the uniqueness of the request. If you do not supply a unique value, one will be generated for you (SSL.com uses a random 10-digit hexadecimal number for this purpose). Specifying a unique value in this way is useful if you want to generate DCV files or CNAME entries outside of SSL.com’s user portal. Must be unique to each CSR and domains combination. Ignored if no CSR is in the request.
+     * @param array $callback This is the callback SSL.com will make once the certificate is issued and ready for collection. The url is "called" via the method (post or get).  Example: {callback":{"url":"https://www.domain.com/receive_certificate.asp","method":"post",auth":{"basic":{"username":"your_username","password":"your_password"}},"parameters":{"certificate_hook":"cert","custom_1":"any_value","custom_2":"any_value","etc":"etc"}}.
+     */
+    public function updateCertifiate($ref, $domains = null, $csr = null, $unique_value = null, $callback = null)
+    {
+        return $this->put('/certificate/' . $ref, collect([
+            'domains' => $domains,
+            'unique_value' => $unique_value,
+            'csr' => $csr,
+            'callback' => $callback,
+        ])->filter()->toArray());
+    }
+
+    /**
      * Change domains or DCV
      *
      * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
