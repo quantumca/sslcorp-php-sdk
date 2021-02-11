@@ -80,8 +80,6 @@ class Order extends BaseApi
     public function updateCertifiate($ref, $domains = null, $csr = null, $unique_value = null, $callback = null)
     {
         return $this->put('/certificate/' . $ref, collect([
-            'product' => (string) 106,
-            'period' => (string) 1826,
             'domains' => $domains,
             'unique_value' => $unique_value,
             'csr' => $csr,
@@ -149,5 +147,19 @@ class Order extends BaseApi
             'response_type' => $response_type,
             'response_encoding' => $response_encoding,
         ]);
+    }
+
+    /**
+     * Revoke certificates in an order
+     * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
+     * @param string $reason
+     * @param string[] $serials
+     */
+    public function revokeCertificate($ref, $reason, $serials)
+    {
+        return $this->delete('/certificate/' . $ref, collect([
+            'reason' => $reason,
+            'serials' => $serials,
+        ])->filter()->toArray());
     }
 }
