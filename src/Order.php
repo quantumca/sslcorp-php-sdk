@@ -38,7 +38,7 @@ class Order extends BaseApi
      */
     public function createCertificate($product, $period, $unique_value, $csr, $server_software, $domains, $organization, $organization_unit, $post_office_box, $street_address_1, $street_address_2, $street_address_3, $locality, $state_or_province, $postal_code, $country, $duns_number, $company_number, $joi, $ca_certificate_id, $external_order_number, $hide_certificate_reference, $callback, $contacts, $app_rep, $payment_method)
     {
-        return $this->post('/certificates', [
+        return $this->post('/certificates', collect([
             'product' => $product,
             'period' => $period,
             'unique_value' => $unique_value,
@@ -65,7 +65,7 @@ class Order extends BaseApi
             'contacts' => $contacts,
             'app_rep' => $app_rep,
             'payment_method' => $payment_method,
-        ]);
+        ])->filter()->toArray());
     }
 
     /**
@@ -80,6 +80,8 @@ class Order extends BaseApi
     public function updateCertifiate($ref, $domains = null, $csr = null, $unique_value = null, $callback = null)
     {
         return $this->put('/certificate/' . $ref, collect([
+            'product' => (string) 106,
+            'period' => (string) 1826,
             'domains' => $domains,
             'unique_value' => $unique_value,
             'csr' => $csr,

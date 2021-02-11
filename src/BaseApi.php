@@ -18,9 +18,9 @@ abstract class BaseApi
                 'account_key' => config('ssl.account_key'),
                 'secret_key' => config('ssl.secret_key'),
             ]),
-            RequestOptions::CONNECT_TIMEOUT => 600,
-            RequestOptions::READ_TIMEOUT => 600,
-            RequestOptions::TIMEOUT => 600,
+            RequestOptions::CONNECT_TIMEOUT => config('ssl.timeout', 600),
+            RequestOptions::READ_TIMEOUT => config('ssl.timeout', 600),
+            RequestOptions::TIMEOUT => config('ssl.timeout', 600),
         ];
     }
 
