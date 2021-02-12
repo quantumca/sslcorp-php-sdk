@@ -2,6 +2,8 @@
 
 namespace SslCorp;
 
+use ArrayObject;
+
 class Order extends BaseApi
 {
     /**

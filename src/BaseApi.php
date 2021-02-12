@@ -3,6 +3,7 @@
 namespace SslCorp;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
@@ -18,9 +19,10 @@ abstract class BaseApi
                 'account_key' => config('ssl.account_key'),
                 'secret_key' => config('ssl.secret_key'),
             ]),
-            RequestOptions::CONNECT_TIMEOUT => config('ssl.timeout', 600),
-            RequestOptions::READ_TIMEOUT => config('ssl.timeout', 600),
-            RequestOptions::TIMEOUT => config('ssl.timeout', 600),
+            RequestOptions::CONNECT_TIMEOUT => config('ssl.connect_timeout', 3),
+            RequestOptions::READ_TIMEOUT => config('ssl.read_timeout', 500),
+            RequestOptions::TIMEOUT => config('ssl.timeout', 500),
+            RequestOptions::VERIFY => false,
         ];
     }
 
@@ -50,7 +52,12 @@ abstract class BaseApi
         logger()->debug('SSL_API_METHOD', ['GET']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::QUERY));
-        $res = $this->http()->get($uri, $this->extra($data, RequestOptions::QUERY));
+        try {
+            $res = $this->http()->get($uri, $this->extra($data, RequestOptions::QUERY));
+        } catch (ServerException $e) {
+            logger()->debug('SSL_API_RES_HTML', [$e->getResponse()->getBody()->__toString()]);
+            throw $e;
+        }
         $json = json_decode($res->getBody()->__toString());
         logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
         logger()->debug('SSL_API_RES_DATA', (array) $json);
@@ -63,7 +70,12 @@ abstract class BaseApi
         logger()->debug('SSL_API_METHOD', ['POST']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
-        $res = $this->http()->post($uri, $this->extra($data, RequestOptions::JSON));
+        try {
+            $res = $this->http()->post($uri, $this->extra($data, RequestOptions::JSON));
+        } catch (ServerException $e) {
+            logger()->debug('SSL_API_RES_HTML', [$e->getResponse()->getBody()->__toString()]);
+            throw $e;
+        }
         $json = json_decode($res->getBody()->__toString());
         logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
         logger()->debug('SSL_API_RES_DATA', (array) $json);
@@ -76,7 +88,12 @@ abstract class BaseApi
         logger()->debug('SSL_API_METHOD', ['PUT']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
-        $res = $this->http()->put($uri, $this->extra($data, RequestOptions::JSON));
+        try {
+            $res = $this->http()->put($uri, $this->extra($data, RequestOptions::JSON));
+        } catch (ServerException $e) {
+            logger()->debug('SSL_API_RES_HTML', [$e->getResponse()->getBody()->__toString()]);
+            throw $e;
+        }
         $json = json_decode($res->getBody()->__toString());
         logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
         logger()->debug('SSL_API_RES_DATA', (array) $json);
@@ -89,7 +106,12 @@ abstract class BaseApi
         logger()->debug('SSL_API_METHOD', ['DELETE']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
         logger()->debug('SSL_API_DATA', $this->extra($data, RequestOptions::JSON));
-        $res = $this->http()->delete($uri, $this->extra($data, RequestOptions::JSON));
+        try {
+            $res = $this->http()->delete($uri, $this->extra($data, RequestOptions::JSON));
+        } catch (ServerException $e) {
+            logger()->debug('SSL_API_RES_HTML', [$e->getResponse()->getBody()->__toString()]);
+            throw $e;
+        }
         $json = json_decode($res->getBody()->__toString());
         logger()->debug('SSL_API_RES_CODE', [$res->getStatusCode()]);
         logger()->debug('SSL_API_RES_DATA', (array) $json);
