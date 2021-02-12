@@ -12,10 +12,23 @@ use SslCorp\Exception\ResponseErrorException;
 
 abstract class BaseApi
 {
+    protected function replaceNullWithEmpty($data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value) || is_object($value)) {
+                $data[$key] = $this->replaceNullWithEmpty($value);
+            } else if ($value === null) {
+                $data[$key] = '';
+            }
+        }
+
+        return $data;
+    }
+
     private function extra($data, $key)
     {
         return [
-            $key => array_merge($data, [
+            $key => array_merge($this->replaceNullWithEmpty($data), [
                 'account_key' => config('ssl.account_key'),
                 'secret_key' => config('ssl.secret_key'),
             ]),
