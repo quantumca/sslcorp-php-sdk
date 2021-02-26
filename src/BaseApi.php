@@ -12,6 +12,14 @@ use SslCorp\Exception\ResponseErrorException;
 
 abstract class BaseApi
 {
+    protected $config = [];
+
+    public function __construct($config = [])
+    {
+        $this->config = config('ssl');
+        $this->config = array_merge($this->config, $config);
+    }
+
     protected function replaceNullWithEmpty($data)
     {
         foreach ($data as $key => $value) {
@@ -29,13 +37,13 @@ abstract class BaseApi
     {
         return [
             $key => array_merge($this->replaceNullWithEmpty($data), [
-                'account_key' => config('ssl.account_key'),
-                'secret_key' => config('ssl.secret_key'),
+                'account_key' => $this->config['account_key'],
+                'secret_key' => $this->config['secret_key'],
             ]),
-            RequestOptions::CONNECT_TIMEOUT => config('ssl.connect_timeout', 3),
-            RequestOptions::READ_TIMEOUT => config('ssl.read_timeout', 500),
-            RequestOptions::TIMEOUT => config('ssl.timeout', 500),
-            RequestOptions::VERIFY => false,
+            RequestOptions::CONNECT_TIMEOUT => $this->config['connect_timeout'] ?? 3,
+            RequestOptions::READ_TIMEOUT => $this->config['read_timeout'] ?? 500,
+            RequestOptions::TIMEOUT => $this->config['timeout'] ?? 500,
+            RequestOptions::VERIFY => $this->config['verify'] ?? false,
         ];
     }
 

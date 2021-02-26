@@ -14,9 +14,9 @@ class Api
      */
     protected $instances = [];
 
-    public function __construct()
+    public function __construct($config = [])
     {
-        array_push($this->instances, new Order());
+        array_push($this->instances, new Order($config));
     }
 
     public function __call($name, $arguments)
