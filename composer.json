@@ -3,9 +3,9 @@
     "description": "The PHP SDK for SslCorp API",
     "authors": [
         {
-            "name": "Dev Team from Quantum CA",
-            "email": "dev@quantumca.cn",
-            "homepage": "https://www.quantumca.cn"
+            "name": "Dev Team",
+            "email": "technical@quantumca.limited",
+            "homepage": "https://www.quantumca.com.cn"
         }
     ],
     "type": "package",
