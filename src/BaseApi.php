@@ -4,6 +4,8 @@ namespace SslCorp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
@@ -49,15 +51,21 @@ abstract class BaseApi
 
     private function http()
     {
-        return new Client([
+        $options = [
             'base_uri' => config('ssl.endpoint', 'https://sws.sslpki.com'),
-        ]);
+        ];
+
+        if (app()->offsetExists('sslcorp_mock')) {
+            $options['handler'] = app('sslcorp_mock');
+        }
+
+        return new Client($options);
     }
 
     protected function processErrror(ResponseInterface $response)
     {
         $json = json_decode($response->getBody()->__toString());
-        if ($response->getStatusCode() != 200 || (property_exists($json, 'errors') && $json->errors)) {
+        if ($response->getStatusCode() != 200 || !$json || (property_exists($json, 'errors') && $json->errors)) {
             if (json_last_error() != JSON_ERROR_NONE) {
                 throw new ResponseErrorException($response->getReasonPhrase(), $response->getStatusCode(), null, $response->getBody()->__toString());
             }
