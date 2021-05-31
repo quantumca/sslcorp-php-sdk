@@ -4,8 +4,6 @@ namespace SslCorp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
@@ -76,7 +74,7 @@ abstract class BaseApi
         }
     }
 
-    protected function get($uri, $data)
+    public function get($uri, $data)
     {
         logger()->debug('SSL_API_METHOD', ['GET']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
@@ -94,7 +92,7 @@ abstract class BaseApi
         return json_decode($res->getBody()->__toString());
     }
 
-    protected function post($uri, $data)
+    public function post($uri, $data)
     {
         logger()->debug('SSL_API_METHOD', ['POST']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
@@ -112,7 +110,7 @@ abstract class BaseApi
         return $json;
     }
 
-    protected function put($uri, $data)
+    public function put($uri, $data)
     {
         logger()->debug('SSL_API_METHOD', ['PUT']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
@@ -130,7 +128,7 @@ abstract class BaseApi
         return $json;
     }
 
-    protected function delete($uri, $data)
+    public function delete($uri, $data)
     {
         logger()->debug('SSL_API_METHOD', ['DELETE']);
         logger()->debug('SSL_API_URL', [config('ssl.endpoint', 'https://sws.sslpki.com') . $uri]);
