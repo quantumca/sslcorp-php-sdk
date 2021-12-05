@@ -79,6 +79,16 @@ class Order extends BaseApi
     }
 
     /**
+     * Retry DCV
+     *
+     * @param string $ref String ref is the certificate reference number (or voucher code) of the SSL.com certificate order. Example: co-abcd1234.
+     */
+    public function replaceDomain($ref, $domain_dcv, $domains)
+    {
+        return $this->post('/certificate/' . $ref . '/replace', ['domains' => $domain_dcv, 'cert_names' => $domains,]);
+    }
+
+    /**
      * List all Certificates
      *
      * @param string $per_page The number of records per page (default is 10 if unspecified).
