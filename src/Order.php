@@ -140,4 +140,14 @@ class Order extends BaseApi
             'serials' => $serials,
         ])->filter()->toArray());
     }
+
+    /**
+     * Retrieve a certificate's validations methods
+     *
+     * @param string $ref
+     */
+    public function validationsMethods($ref)
+    {
+        return $this->get('/certificate/' . $ref . '/validations/methods', []);
+    }
 }
