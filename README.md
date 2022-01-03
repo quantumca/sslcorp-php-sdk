@@ -1,2 +1,3 @@
-# sslcorp-php-sdk
-The PHP SDK for SslCorp API
+# SSLcom's PHP SDK
+
+[Deprecated!] The unofficial PHP SDK for SslCorp API
